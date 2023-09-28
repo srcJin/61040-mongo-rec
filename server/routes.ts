@@ -64,7 +64,43 @@ class Routes {
   async deletePost(session: WebSessionDoc, _id: ObjectId) {
     // TODO 3: Delete the post with given _id
     // Make sure the user deleting is the author of the post
-    throw new Error("Not implemented!");
+
+    // get posts
+    // console.log("getPosts=", Post.read(query));
+
+    if (!session.user) {
+      throw new Error("User not authenticated");
+    }
+
+    const post = await Post.read({ _id });
+    // console.log("post=", post);
+    if (post.length === 0) {
+      throw new Error("Post not found");
+    }
+
+    const user = await User.getById(session.user);
+
+    // console.log("post=", post);
+    // console.log("delete post ,post id =", _id);
+    // console.log("delete post ,user =", user);
+
+    // if user exists
+    if (user) {
+      // console.log("post[0].author=", post[0].author);
+      // console.log("user._id", user._id);
+      // test if the post author id equals to user id
+      if (post[0].author.toString() !== user._id.toString()) {
+        throw new Error("Current User is not the author");
+      } else {
+        // if yes, then delete the post
+        return await Post.delete(_id);
+      }
+    } else {
+      throw new Error("User not found");
+    }
+
+    // console.log("session=", session);
+    // console.log("session.user =", session.user);
   }
 }
 

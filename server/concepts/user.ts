@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
+import { BadValuesError, NotAllowedError } from "./errors";
 
 export interface UserDoc extends BaseDoc {
   username: string;
@@ -13,7 +13,12 @@ export default class UserConcept {
   async getById(_id: ObjectId) {
     // TODO 1: Implement this method
     // Hint: check out this.users.readOne
-    throw new Error("Not implemented!");
+    const filter = _id ? { _id } : {};
+    // const user = (await this.users.readOne(filter)).map(this.sanitizeUser);
+    const user = await this.users.readOne(filter);
+    // console.log("getByID here, user=", user);
+    // throw new Error("Not implemented!");
+    return user;
   }
 
   async create(username: string, password: string) {
@@ -25,7 +30,12 @@ export default class UserConcept {
   async update(_id: ObjectId, update: Partial<UserDoc>) {
     // TODO 2: Implement this method
     // Hint: check out this.users.updateOne
-    throw new Error("Not implemented!");
+    console.log("update here");
+    const filter = _id ? { _id } : {};
+    console.log("update = ", update);
+    await this.users.updateOne(filter, update);
+    return { msg: "User updated successfully!", user: await this.users.readOne({ _id }) };
+    // throw new Error("Not implemented!");
   }
 
   // Sanitizes user object by removing password field
