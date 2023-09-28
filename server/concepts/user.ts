@@ -30,9 +30,9 @@ export default class UserConcept {
   async update(_id: ObjectId, update: Partial<UserDoc>) {
     // TODO 2: Implement this method
     // Hint: check out this.users.updateOne
-    console.log("update here");
+    // console.log("update here");
     const filter = _id ? { _id } : {};
-    console.log("update = ", update);
+    // console.log("update = ", update);
     await this.users.updateOne(filter, update);
     return { msg: "User updated successfully!", user: await this.users.readOne({ _id }) };
     // throw new Error("Not implemented!");
